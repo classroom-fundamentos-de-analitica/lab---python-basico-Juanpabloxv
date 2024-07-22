@@ -12,23 +12,29 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 """
 
+import fileinput
+from collections import OrderedDict
+
+
 
 def pregunta_01():
     """
     Retorne la suma de la segunda columna.
-
-    Rta/
-    214
-
+    Rta/  214
     """
-    return
-
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    acumulador=0
+    for line in f:
+        fila=line.split()
+        acumulador+=int(fila[1])
+    
+    return acumulador
 
 def pregunta_02():
     """
     Retorne la cantidad de registros por cada letra de la primera columna como la lista
     de tuplas (letra, cantidad), ordendas alfabéticamente.
-
     Rta/
     [
         ("A", 8),
@@ -37,16 +43,26 @@ def pregunta_02():
         ("D", 6),
         ("E", 14),
     ]
-
     """
-    return
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
 
-
+    for line in f:
+        fila=line.split()
+        if fila[0] in diccionario:
+            diccionario[fila[0]] += 1
+        else:
+            diccionario[fila[0]]= 1    
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key]))
+    return lista
 def pregunta_03():
     """
     Retorne la suma de la columna 2 por cada letra de la primera columna como una lista
     de tuplas (letra, suma) ordendas alfabeticamente.
-
     Rta/
     [
         ("A", 53),
@@ -55,16 +71,27 @@ def pregunta_03():
         ("D", 31),
         ("E", 67),
     ]
-
     """
-    return
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
 
+    for line in f:
+        fila=line.split()
+        if fila[0] in diccionario:
+            diccionario[fila[0]] += int(fila[1])
+        else:
+            diccionario[fila[0]]= int(fila[1]) 
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key]))
+    return lista
 
 def pregunta_04():
     """
     La columna 3 contiene una fecha en formato `YYYY-MM-DD`. Retorne la cantidad de
     registros por cada mes, tal como se muestra a continuación.
-
     Rta/
     [
         ("01", 3),
@@ -80,16 +107,28 @@ def pregunta_04():
         ("11", 2),
         ("12", 3),
     ]
-
     """
-    return
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
 
+    for line in f:
+        fila=line.split()
+        mes= fila[2].split("-")[1]
+        if mes in diccionario:
+            diccionario[mes] += 1
+        else:
+            diccionario[mes]= 1
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key]))
+    return lista
 
 def pregunta_05():
     """
     Retorne una lista de tuplas con el valor maximo y minimo de la columna 2 por cada
     letra de la columa 1.
-
     Rta/
     [
         ("A", 9, 2),
@@ -98,8 +137,27 @@ def pregunta_05():
         ("D", 8, 3),
         ("E", 9, 1),
     ]
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
+
+    for line in f:
+        fila=line.split()
+        if fila[0] in diccionario:
+            max= diccionario[fila[0]][0]
+            min= diccionario[fila[0]][1]
+            if int(fila[1]) > max:
+                diccionario[fila[0]][0] = int(fila[1])
+            if int(fila[1]) < min:
+                diccionario[fila[0]][1] = int(fila[1])
+        else:
+            diccionario[fila[0]]= [int(fila[1]), int(fila[1])]
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key][0], orderDiccionario[key][1]))
+    return lista
     return
 
 
@@ -109,7 +167,6 @@ def pregunta_06():
     una clave y el valor despues del caracter `:` corresponde al valor asociado a la
     clave. Por cada clave, obtenga el valor asociado mas pequeño y el valor asociado mas
     grande computados sobre todo el archivo.
-
     Rta/
     [
         ("aaa", 1, 9),
@@ -123,8 +180,32 @@ def pregunta_06():
         ("iii", 0, 9),
         ("jjj", 5, 17),
     ]
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
+
+    for line in f:
+        fila=line.split()
+        texto= fila[4].split(",")
+        for codigos in texto:
+            codigo= codigos.split(":")
+            letras = codigo[0]
+            numero = codigo[1]
+            if letras in diccionario:
+                max= diccionario[letras][1]
+                min= diccionario[letras][0]
+                if int(numero) > max:
+                    diccionario[letras][1] = int(numero)
+                if int(numero) < min:
+                    diccionario[letras][0] = int(numero)
+            else:
+                diccionario[letras]= [int(numero), int(numero)] 
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key][0],orderDiccionario[key][1] ))
+    return lista
     return
 
 
@@ -133,7 +214,6 @@ def pregunta_07():
     Retorne una lista de tuplas que asocien las columnas 0 y 1. Cada tupla contiene un
     valor posible de la columna 2 y una lista con todas las letras asociadas (columna 1)
     a dicho valor de la columna 2.
-
     Rta/
     [
         (0, ["C"]),
@@ -147,8 +227,22 @@ def pregunta_07():
         (8, ["E", "D", "E", "A", "B"]),
         (9, ["A", "B", "E", "A", "A", "C"]),
     ]
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
+
+    for line in f:
+        fila=line.split()
+        if int(fila[1]) in diccionario:
+            diccionario[int(fila[1])].append(fila[0])
+        else:
+            diccionario[int(fila[1])]= [fila[0]]
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista.append((key, orderDiccionario[key]))
+    return lista
     return
 
 
@@ -158,7 +252,6 @@ def pregunta_08():
     de la segunda columna; la segunda parte de la tupla es una lista con las letras
     (ordenadas y sin repetir letra) de la primera  columna que aparecen asociadas a dicho
     valor de la segunda columna.
-
     Rta/
     [
         (0, ["C"]),
@@ -172,8 +265,24 @@ def pregunta_08():
         (8, ["A", "B", "D", "E"]),
         (9, ["A", "B", "C", "E"]),
     ]
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= []
+
+    for line in f:
+        fila=line.split()
+        if int(fila[1]) in diccionario:
+            if fila[0] not in diccionario[int(fila[1])]:
+                diccionario[int(fila[1])].append(fila[0])
+        else:
+            diccionario[int(fila[1])]=[fila[0]] 
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        orderDiccionario[key].sort()
+        lista.append((key, orderDiccionario[key]))
+    return lista
     return
 
 
@@ -197,6 +306,26 @@ def pregunta_09():
     }
 
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= {}
+
+    for line in f:
+        fila=line.split()
+        texto= fila[4].split(",")
+        for codigos in texto:
+            codigo= codigos.split(":")
+            letras = codigo[0]
+            numero = codigo[1]
+            if letras in diccionario:
+                diccionario[letras]+= 1
+            else:
+                diccionario[letras]= 1
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista[key]= orderDiccionario[key]
+    return lista
     return
 
 
@@ -204,7 +333,6 @@ def pregunta_10():
     """
     Retorne una lista de tuplas contengan por cada tupla, la letra de la columna 1 y la
     cantidad de elementos de las columnas 4 y 5.
-
     Rta/
     [
         ("E", 3, 5),
@@ -215,9 +343,17 @@ def pregunta_10():
         ("E", 2, 3),
         ("E", 3, 3),
     ]
-
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    lista= []
+
+    for line in f:
+        fila=line.split()
+        len_col3= len(fila[3].split(","))
+        len_col4= len(fila[4].split(","))
+        lista.append((fila[0], len_col3, len_col4))
+    return lista
     return
 
 
@@ -225,7 +361,6 @@ def pregunta_11():
     """
     Retorne un diccionario que contengan la suma de la columna 2 para cada letra de la
     columna 4, ordenadas alfabeticamente.
-
     Rta/
     {
         "a": 122,
@@ -236,9 +371,26 @@ def pregunta_11():
         "f": 134,
         "g": 35,
     }
-
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= {}
+
+    for line in f:
+        fila=line.split()
+        letras= fila[3].split(",")
+        for letra in letras:
+            if letra in diccionario:
+                diccionario[letra] += int(fila[1])
+            else:
+                diccionario[letra]= int(fila[1]) 
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista[key]= orderDiccionario[key]
+    print(lista)
+    return lista
+
     return
 
 
@@ -246,7 +398,6 @@ def pregunta_12():
     """
     Genere un diccionario que contengan como clave la columna 1 y como valor la suma de
     los valores de la columna 5 sobre todo el archivo.
-
     Rta/
     {
         'A': 177,
@@ -255,6 +406,28 @@ def pregunta_12():
         'D': 136,
         'E': 324
     }
-
     """
+    files = "data.csv"
+    f=fileinput.input(files=files)
+    diccionario= {}
+    lista= {}
+
+    for line in f:
+        fila=line.split()
+        texto= fila[4].split(",")
+        suma= 0
+        for codigos in texto:
+            codigo= codigos.split(":")
+            letras = codigo[0]
+            numero = int(codigo[1])
+            suma+= numero
+        if fila[0] in diccionario:
+            diccionario[fila[0]]+= suma
+        else:
+            diccionario[fila[0]]= suma 
+            
+    orderDiccionario= OrderedDict(sorted(diccionario.items()))
+    for key in orderDiccionario:
+        lista[key]= orderDiccionario[key]
+    return lista
     return
